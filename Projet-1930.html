@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDM 1930 — Outil de Recherche</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Special+Elite&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sepia: #f4ede0;
+    --sepia-dark: #e8dcc8;
+    --encre: #1a1208;
+    --brun: #5c3d1e;
+    --brun-clair: #8b6340;
+    --rouge: #8b1a1a;
+    --or: #c9a84c;
+    --gris: #6b5e4e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--sepia);
+    color: var(--encre);
+    font-family: 'Libre Baskerville', serif;
+    min-height: 100vh;
+  }
+  header {
+    background: var(--encre);
+    color: var(--sepia);
+    border-bottom: 4px solid var(--or);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 32px;
+    border-bottom: 1px solid var(--brun);
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--or);
+    text-transform: uppercase;
+  }
+  .header-main {
+    text-align: center;
+    padding: 24px 32px 20px;
+  }
+  .header-main::before, .header-main::after {
+    content: '—————————————';
+    display: block;
+    color: var(--or);
+    letter-spacing: 4px;
+    font-size: 12px;
+    opacity: 0.6;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .subtitle {
+    font-family: 'Special Elite', cursive;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--or);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  nav {
+    background: var(--brun);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    border-bottom: 3px solid var(--or);
+  }
+  nav button {
+    background: none;
+    border: none;
+    color: var(--sepia);
+    font-family: 'Special Elite', cursive;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  nav button:hover { background: rgba(201,168,76,0.2); color: var(--or); }
+  nav button.active { background: var(--or); color: var(--encre); font-weight: bold; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--brun);
+    border-bottom: 2px solid var(--or);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .form-card {
+    background: white;
+    border: 1px solid var(--sepia-dark);
+    border-top: 4px solid var(--rouge);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 4px 4px 0 var(--sepia-dark);
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .full-width { grid-column: 1 / -1; }
+  label {
+    display: block;
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 6px;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--sepia-dark);
+    background: var(--sepia);
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14px;
+    color: var(--encre);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--or);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  .btn {
+    background: var(--rouge);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-family: 'Special Elite', cursive;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+  }
+  .btn:hover { background: var(--brun); }
+  .table-wrapper {
+    background: white;
+    border: 1px solid var(--sepia-dark);
+    overflow-x: auto;
+    box-shadow: 4px 4px 0 var(--sepia-dark);
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--encre); color: var(--sepia); }
+  thead th {
+    padding: 12px 16px;
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  tbody tr { border-bottom: 1px solid var(--sepia-dark); transition: background 0.15s; }
+  tbody tr:hover { background: var(--sepia); }
+  tbody td { padding: 12px 16px; font-size: 13px; vertical-align: middle; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    font-family: 'Special Elite', cursive;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-vert { background: #d4edda; color: #155724; }
+  .badge-rouge { background: #f8d7da; color: #721c24; }
+  .badge-or { background: #fff3cd; color: #856404; }
+  .badge-gris { background: #e2e3e5; color: #383d41; }
+  .badge-bleu { background: #d1ecf1; color: #0c5460; }
+  .delete-btn {
+    background: none;
+    border: 1px solid #ddd;
+    color: var(--rouge);
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+  }
+  .delete-btn:hover { background: var(--rouge); color: white; border-color: var(--rouge); }
+  .timeline { position: relative; padding: 20px 0; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--or), var(--brun));
+    transform: translateX(-50%);
+  }
+  .timeline-item {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: calc(50% + 32px);
+    margin-bottom: 32px;
+    position: relative;
+    animation: fadeIn 0.4s ease;
+  }
+  .timeline-item:nth-child(even) {
+    justify-content: flex-start;
+    padding-right: 0;
+    padding-left: calc(50% + 32px);
+  }
+  .timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--or);
+    border: 3px solid var(--encre);
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+  .timeline-card {
+    background: white;
+    border: 1px solid var(--sepia-dark);
+    border-left: 4px solid var(--rouge);
+    padding: 16px 20px;
+    max-width: 380px;
+    box-shadow: 3px 3px 0 var(--sepia-dark);
+    position: relative;
+  }
+  .timeline-item:nth-child(even) .timeline-card {
+    border-left: none;
+    border-right: 4px solid var(--brun-clair);
+  }
+  .timeline-date {
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--or);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--encre);
+    margin-bottom: 6px;
+  }
+  .timeline-desc { font-size: 12px; color: var(--gris); line-height: 1.5; }
+  .timeline-delete {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .timeline-delete:hover { color: var(--rouge); }
+  .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .doc-card {
+    background: white;
+    border: 1px solid var(--sepia-dark);
+    padding: 20px;
+    box-shadow: 3px 3px 0 var(--sepia-dark);
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .doc-card:hover { transform: translateY(-2px); }
+  .doc-type { font-family: 'Special Elite', cursive; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--or); margin-bottom: 8px; }
+  .doc-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--encre); }
+  .doc-meta { font-size: 12px; color: var(--gris); margin-bottom: 8px; }
+  .doc-notes { font-size: 12px; font-style: italic; color: var(--brun-clair); line-height: 1.5; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stat-card {
+    background: var(--encre);
+    color: var(--sepia);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--or); }
+  .stat-number { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: var(--or); line-height: 1; }
+  .stat-label { font-family: 'Special Elite', cursive; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; opacity: 0.8; }
+  .journal-entry {
+    background: white;
+    border-left: 4px solid var(--or);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 3px 3px 0 var(--sepia-dark);
+    position: relative;
+  }
+  .journal-date { font-family: 'Special Elite', cursive; font-size: 11px; letter-spacing: 2px; color: var(--gris); text-transform: uppercase; margin-bottom: 8px; }
+  .journal-text { font-size: 14px; line-height: 1.7; font-style: italic; color: var(--encre); }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--gris); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .empty-state p { font-style: italic; font-size: 14px; }
+  .filter-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .filter-bar select, .filter-bar input { flex: 1; min-width: 160px; }
+  .loading {
+    text-align: center;
+    padding: 40px;
+    font-family: 'Special Elite', cursive;
+    letter-spacing: 2px;
+    color: var(--gris);
+    font-size: 12px;
+  }
+  .sync-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--encre);
+    color: var(--or);
+    padding: 8px 16px;
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 2px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 999;
+  }
+  .sync-indicator.visible { opacity: 1; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 768px) {
+    h1 { font-size: 32px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { padding: 0 0 0 52px; justify-content: flex-start; }
+    .timeline-dot { left: 20px; }
+    nav button { padding: 12px 14px; font-size: 10px; }
+    .header-top { flex-direction: column; gap: 4px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <span>Projet de recherche historique</span>
+    <span id="current-date"></span>
+    <span>Uruguay · 1930</span>
+  </div>
+  <div class="header-main">
+    <div class="subtitle">Première Coupe du Monde de Football</div>
+    <h1>CDM 1930</h1>
+    <div class="subtitle">Outil de recherche & documentation</div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showSection('dashboard', this)">📊 Tableau de bord</button>
+  <button onclick="showSection('federations', this)">🏛 Fédérations</button>
+  <button onclick="showSection('documents', this)">📁 Documents</button>
+  <button onclick="showSection('timeline', this)">📅 Frise</button>
+  <button onclick="showSection('bibliographie', this)">📚 Bibliographie</button>
+  <button onclick="showSection('journal', this)">✍️ Journal</button>
+</nav>
+
+<div class="sync-indicator" id="sync-indicator">✓ Synchronisé</div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="section active">
+  <div class="container">
+    <div class="section-title"><span>📊</span> Tableau de bord</div>
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">Chargement...</div></div>
+      <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">Chargement...</div></div>
+      <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">Chargement...</div></div>
+      <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">Chargement...</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <div class="section-title" style="font-size:18px;"><span>🏛</span> Dernières fédérations</div>
+        <div id="dashboard-feds"><div class="loading">Chargement...</div></div>
+      </div>
+      <div>
+        <div class="section-title" style="font-size:18px;"><span>✍️</span> Dernières notes</div>
+        <div id="dashboard-journal"><div class="loading">Chargement...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FÉDÉRATIONS -->
+
+<div id="federations" class="section">
+  <div class="container">
+    <div class="section-title"><span>🏛</span> Suivi des fédérations</div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div>
+          <label>Pays / Fédération</label>
+          <input type="text" id="fed-pays" placeholder="Ex: Uruguay, France, Brésil...">
+        </div>
+        <div>
+          <label>Statut en 1930</label>
+          <select id="fed-statut1930">
+            <option value="participant">Participant</option>
+            <option value="absent">Absent / Non-participant</option>
+            <option value="inconnu">Inconnu</option>
+          </select>
+        </div>
+        <div>
+          <label>Date de contact</label>
+          <input type="date" id="fed-date">
+        </div>
+        <div>
+          <label>Statut de la réponse</label>
+          <select id="fed-reponse">
+            <option value="en-attente">En attente</option>
+            <option value="repondu">A répondu</option>
+            <option value="relance">À relancer</option>
+            <option value="negatif">Réponse négative</option>
+            <option value="positif">Réponse positive</option>
+          </select>
+        </div>
+        <div>
+          <label>Interlocuteur</label>
+          <input type="text" id="fed-contact" placeholder="Nom, poste...">
+        </div>
+        <div>
+          <label>Email / Coordonnées</label>
+          <input type="text" id="fed-email" placeholder="email@federation.com">
+        </div>
+        <div class="full-width">
+          <label>Notes / Résumé de la réponse</label>
+          <textarea id="fed-notes" placeholder="Résumé de l'échange, documents reçus, interlocuteur..."></textarea>
+        </div>
+      </div>
+      <button class="btn" onclick="ajouterFederation()">+ Ajouter cette fédération</button>
+    </div>
+    <div class="filter-bar">
+      <select id="filter-statut" onchange="renderFederations()">
+        <option value="">Tous les statuts 1930</option>
+        <option value="participant">Participants</option>
+        <option value="absent">Absents</option>
+      </select>
+      <select id="filter-reponse" onchange="renderFederations()">
+        <option value="">Toutes les réponses</option>
+        <option value="en-attente">En attente</option>
+        <option value="repondu">A répondu</option>
+        <option value="relance">À relancer</option>
+        <option value="positif">Positive</option>
+        <option value="negatif">Négative</option>
+      </select>
+      <input type="text" id="filter-search" placeholder="Rechercher un pays..." oninput="renderFederations()">
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Pays</th><th>Statut 1930</th><th>Date contact</th>
+            <th>Réponse</th><th>Interlocuteur</th><th>Notes</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="fed-tbody"><tr><td colspan="7" class="loading">Chargement...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- DOCUMENTS -->
+
+<div id="documents" class="section">
+  <div class="container">
+    <div class="section-title"><span>📁</span> Gestion des documents</div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div>
+          <label>Titre du document</label>
+          <input type="text" id="doc-titre" placeholder="Nom du document ou de la source">
+        </div>
+        <div>
+          <label>Type de source</label>
+          <select id="doc-type">
+            <option value="source-primaire">Source primaire (archives, presse 1930...)</option>
+            <option value="source-secondaire">Source secondaire (livre, article...)</option>
+            <option value="correspondance">Correspondance (fédération, institution...)</option>
+            <option value="photo">Photographie / Image</option>
+            <option value="statistique">Statistiques / Données</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div>
+          <label>Provenance / Origine</label>
+          <input type="text" id="doc-provenance" placeholder="Ex: FFF, FIFA, Gallica, BNF...">
+        </div>
+        <div>
+          <label>Date du document</label>
+          <input type="date" id="doc-date">
+        </div>
+        <div>
+          <label>Pays / Fédération associé(e)</label>
+          <input type="text" id="doc-pays" placeholder="Ex: France, Uruguay...">
+        </div>
+        <div>
+          <label>Lien / Référence</label>
+          <input type="text" id="doc-lien" placeholder="URL ou référence archivistique">
+        </div>
+        <div class="full-width">
+          <label>Notes & annotations</label>
+          <textarea id="doc-notes" placeholder="Ce que ce document apporte à votre recherche..."></textarea>
+        </div>
+      </div>
+      <button class="btn" onclick="ajouterDocument()">+ Ajouter ce document</button>
+    </div>
+    <div class="filter-bar">
+      <select id="filter-doc-type" onchange="renderDocuments()">
+        <option value="">Tous les types</option>
+        <option value="source-primaire">Sources primaires</option>
+        <option value="source-secondaire">Sources secondaires</option>
+        <option value="correspondance">Correspondances</option>
+        <option value="photo">Photos</option>
+        <option value="statistique">Statistiques</option>
+      </select>
+      <input type="text" id="filter-doc-search" placeholder="Rechercher..." oninput="renderDocuments()">
+    </div>
+    <div class="doc-grid" id="doc-grid"><div class="loading" style="grid-column:1/-1">Chargement...</div></div>
+  </div>
+</div>
+
+<!-- FRISE -->
+
+<div id="timeline" class="section">
+  <div class="container">
+    <div class="section-title"><span>📅</span> Frise chronologique</div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div>
+          <label>Date de l'événement</label>
+          <input type="date" id="tl-date">
+        </div>
+        <div>
+          <label>Catégorie</label>
+          <select id="tl-categorie">
+            <option value="institutionnel">Institutionnel / FIFA</option>
+            <option value="match">Match</option>
+            <option value="france">Équipe de France</option>
+            <option value="politique">Contexte politique</option>
+            <option value="federation">Fédération (acceptation/refus)</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div>
+          <label>Titre de l'événement</label>
+          <input type="text" id="tl-titre" placeholder="Ex: Officialisation de la CDM par la FIFA">
+        </div>
+        <div>
+          <label>Lieu</label>
+          <input type="text" id="tl-lieu" placeholder="Ex: Montevideo, Paris...">
+        </div>
+        <div class="full-width">
+          <label>Description</label>
+          <textarea id="tl-desc" placeholder="Détails, contexte, sources associées..."></textarea>
+        </div>
+      </div>
+      <button class="btn" onclick="ajouterEvenement()">+ Ajouter cet événement</button>
+    </div>
+    <div class="timeline" id="timeline-container"><div class="loading">Chargement...</div></div>
+  </div>
+</div>
+
+<!-- BIBLIOGRAPHIE -->
+
+<div id="bibliographie" class="section">
+  <div class="container">
+    <div class="section-title"><span>📚</span> Bibliographie</div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div>
+          <label>Auteur(s)</label>
+          <input type="text" id="bib-auteur" placeholder="Nom, Prénom">
+        </div>
+        <div>
+          <label>Titre</label>
+          <input type="text" id="bib-titre" placeholder="Titre de l'ouvrage ou de l'article">
+        </div>
+        <div>
+          <label>Type</label>
+          <select id="bib-type">
+            <option value="livre">Livre</option>
+            <option value="article">Article scientifique</option>
+            <option value="article-presse">Article de presse</option>
+            <option value="these">Thèse</option>
+            <option value="archive">Archive</option>
+            <option value="site">Site web</option>
+          </select>
+        </div>
+        <div>
+          <label>Année de publication</label>
+          <input type="number" id="bib-annee" placeholder="Ex: 2018" min="1800" max="2030">
+        </div>
+        <div>
+          <label>Éditeur / Revue</label>
+          <input type="text" id="bib-editeur" placeholder="Ex: Perrin, STAPS...">
+        </div>
+        <div>
+          <label>Lu ?</label>
+          <select id="bib-lu">
+            <option value="non-lu">Pas encore lu</option>
+            <option value="en-cours">En cours de lecture</option>
+            <option value="lu">Lu</option>
+          </select>
+        </div>
+        <div class="full-width">
+          <label>Notes & apport pour la recherche</label>
+          <textarea id="bib-notes" placeholder="Ce que cet ouvrage apporte à votre travail..."></textarea>
+        </div>
+      </div>
+      <button class="btn" onclick="ajouterBiblio()">+ Ajouter à la bibliographie</button>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Auteur</th><th>Titre</th><th>Type</th><th>Année</th><th>Éditeur</th><th>Statut</th><th>Notes</th><th></th></tr>
+        </thead>
+        <tbody id="bib-tbody"><tr><td colspan="8" class="loading">Chargement...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+
+<div id="journal" class="section">
+  <div class="container">
+    <div class="section-title"><span>✍️</span> Journal de recherche</div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div>
+          <label>Date</label>
+          <input type="date" id="journal-date">
+        </div>
+        <div>
+          <label>Thème / Piste de recherche</label>
+          <input type="text" id="journal-theme" placeholder="Ex: Participation française, Boycott européen...">
+        </div>
+        <div class="full-width">
+          <label>Note, réflexion ou piste à creuser</label>
+          <textarea id="journal-texte" style="min-height:120px" placeholder="Vos pensées, questions sans réponse, intuitions..."></textarea>
+        </div>
+      </div>
+      <button class="btn" onclick="ajouterJournal()">+ Ajouter cette note</button>
+    </div>
+    <div id="journal-container"><div class="loading">Chargement...</div></div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCTKKgeSc2IhMlgOzWRoAjiqDiThy2JW9w",
+    authDomain: "projet-1930.firebaseapp.com",
+    projectId: "projet-1930",
+    storageBucket: "projet-1930.firebasestorage.app",
+    messagingSenderId: "444782237695",
+    appId: "1:444782237695:web:f253e96e1b1a3a8809f9ca"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Cache local
+  let cache = { federations: [], documents: [], evenements: [], bibliographie: [], journal: [] };
+
+  // Indicateur sync
+  function showSync() {
+    const el = document.getElementById('sync-indicator');
+    el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), 2000);
+  }
+
+  // ===== NAVIGATION =====
+  window.showSection = function(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (btn) btn.classList.add('active');
+    if (id === 'dashboard') renderDashboard();
+  };
+
+  // ===== DATE =====
+  document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+  const today = () => new Date().toISOString().split('T')[0];
+  document.getElementById('fed-date').value = today();
+  document.getElementById('journal-date').value = today();
+
+  // ===== BADGES =====
+  const badgeReponse = {
+    'en-attente': ['badge-or', 'En attente'],
+    'repondu': ['badge-bleu', 'A répondu'],
+    'relance': ['badge-gris', 'À relancer'],
+    'positif': ['badge-vert', 'Positif ✓'],
+    'negatif': ['badge-rouge', 'Négatif ✗']
+  };
+  const badgeStatut1930 = {
+    'participant': ['badge-vert', 'Participant'],
+    'absent': ['badge-rouge', 'Absent'],
+    'inconnu': ['badge-gris', 'Inconnu']
+  };
+  const badgeLu = {
+    'non-lu': ['badge-gris', 'Non lu'],
+    'en-cours': ['badge-or', 'En cours'],
+    'lu': ['badge-vert', 'Lu ✓']
+  };
+  const categorieLabels = {
+    'institutionnel': '🏛 Institutionnel', 'match': '⚽ Match',
+    'france': '🇫🇷 France', 'politique': '🌍 Politique',
+    'federation': '📋 Fédération', 'autre': '📌 Autre'
+  };
+  const typeLabels = {
+    'source-primaire': '📜 Source primaire', 'source-secondaire': '📖 Source secondaire',
+    'correspondance': '✉️ Correspondance', 'photo': '📷 Photo',
+    'statistique': '📊 Statistique', 'autre': '📌 Autre'
+  };
+  const bibTypeLabels = {
+    'livre': '📖 Livre', 'article': '📄 Article scientifique',
+    'article-presse': '📰 Presse', 'these': '🎓 Thèse',
+    'archive': '📜 Archive', 'site': '🌐 Site web'
+  };
+  const catColors = {
+    'institutionnel': '#1a1208', 'match': '#8b1a1a', 'france': '#003189',
+    'politique': '#5c3d1e', 'federation': '#8b6340', 'autre': '#6b5e4e'
+  };
+
+  // ===== FIRESTORE HELPERS =====
+  async function ajouter(col, data) {
+    try {
+      await addDoc(collection(db, col), { ...data, createdAt: Date.now() });
+      showSync();
+    } catch(e) { alert('Erreur de sauvegarde : ' + e.message); }
+  }
+
+  async function supprimer(col, id) {
+    try {
+      await deleteDoc(doc(db, col, id));
+      showSync();
+    } catch(e) { alert('Erreur de suppression : ' + e.message); }
+  }
+
+  // ===== LISTENERS TEMPS RÉEL =====
+  onSnapshot(collection(db, 'federations'), snap => {
+    cache.federations = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderFederations(); renderDashboard();
+  });
+
+  onSnapshot(collection(db, 'documents'), snap => {
+    cache.documents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderDocuments(); renderDashboard();
+  });
+
+  onSnapshot(collection(db, 'evenements'), snap => {
+    cache.evenements = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => new Date(a.date) - new Date(b.date));
+    renderTimeline(); renderDashboard();
+  });
+
+  onSnapshot(collection(db, 'bibliographie'), snap => {
+    cache.bibliographie = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderBiblio(); renderDashboard();
+  });
+
+  onSnapshot(collection(db, 'journal'), snap => {
+    cache.journal = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => b.createdAt - a.createdAt);
+    renderJournal(); renderDashboard();
+  });
+
+  // ===== FÉDÉRATIONS =====
+  window.ajouterFederation = async function() {
+    const pays = document.getElementById('fed-pays').value.trim();
+    if (!pays) { alert('Veuillez indiquer le pays ou la fédération.'); return; }
+    await ajouter('federations', {
+      pays,
+      statut1930: document.getElementById('fed-statut1930').value,
+      date: document.getElementById('fed-date').value,
+      reponse: document.getElementById('fed-reponse').value,
+      notes: document.getElementById('fed-notes').value,
+      contact: document.getElementById('fed-contact').value,
+      email: document.getElementById('fed-email').value
+    });
+    ['fed-pays','fed-notes','fed-contact','fed-email'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('fed-date').value = today();
+  };
+
+  window.supprimerFederation = async function(id) {
+    if (confirm('Supprimer cette fédération ?')) await supprimer('federations', id);
+  };
+
+  window.renderFederations = function() {
+    const statut = document.getElementById('filter-statut').value;
+    const reponse = document.getElementById('filter-reponse').value;
+    const search = document.getElementById('filter-search').value.toLowerCase();
+    let liste = cache.federations.filter(f =>
+      (!statut || f.statut1930 === statut) &&
+      (!reponse || f.reponse === reponse) &&
+      (!search || f.pays.toLowerCase().includes(search))
+    );
+    const tbody = document.getElementById('fed-tbody');
+    if (!liste.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;font-style:italic;color:var(--gris)">Aucune fédération enregistrée</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = liste.map(f => {
+      const [bc1,bl1] = badgeStatut1930[f.statut1930] || ['badge-gris','—'];
+      const [bc2,bl2] = badgeReponse[f.reponse] || ['badge-gris','—'];
+      return `<tr>
+        <td><strong>${f.pays}</strong></td>
+        <td><span class="badge ${bc1}">${bl1}</span></td>
+        <td>${f.date ? new Date(f.date).toLocaleDateString('fr-FR') : '—'}</td>
+        <td><span class="badge ${bc2}">${bl2}</span></td>
+        <td>${f.contact||'—'}<br><small style="color:var(--gris)">${f.email||''}</small></td>
+        <td style="max-width:200px;font-size:12px;font-style:italic">${f.notes||'—'}</td>
+        <td><button class="delete-btn" onclick="supprimerFederation('${f.id}')">✕</button></td>
+      </tr>`;
+    }).join('');
+  };
+
+  // ===== DOCUMENTS =====
+  window.ajouterDocument = async function() {
+    const titre = document.getElementById('doc-titre').value.trim();
+    if (!titre) { alert('Veuillez indiquer un titre.'); return; }
+    await ajouter('documents', {
+      titre,
+      type: document.getElementById('doc-type').value,
+      provenance: document.getElementById('doc-provenance').value,
+      date: document.getElementById('doc-date').value,
+      pays: document.getElementById('doc-pays').value,
+      lien: document.getElementById('doc-lien').value,
+      notes: document.getElementById('doc-notes').value
+    });
+    ['doc-titre','doc-provenance','doc-date','doc-pays','doc-lien','doc-notes'].forEach(id => document.getElementById(id).value = '');
+  };
+
+  window.supprimerDocument = async function(id) {
+    if (confirm('Supprimer ce document ?')) await supprimer('documents', id);
+  };
+
+  window.renderDocuments = function() {
+    const type = document.getElementById('filter-doc-type').value;
+    const search = document.getElementById('filter-doc-search').value.toLowerCase();
+    let liste = cache.documents.filter(d =>
+      (!type || d.type === type) &&
+      (!search || d.titre.toLowerCase().includes(search) || (d.pays||'').toLowerCase().includes(search))
+    );
+    const grid = document.getElementById('doc-grid');
+    if (!liste.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">📁</div><p>Aucun document enregistré</p></div>`;
+      return;
+    }
+    grid.innerHTML = liste.map(d => `
+      <div class="doc-card">
+        <div class="doc-type">${typeLabels[d.type]||d.type}</div>
+        <div class="doc-title">${d.titre}</div>
+        <div class="doc-meta">
+          ${d.provenance?`<strong>${d.provenance}</strong>`:''}
+          ${d.date?` · ${new Date(d.date).toLocaleDateString('fr-FR')}`:''}
+          ${d.pays?` · ${d.pays}`:''}
+        </div>
+        ${d.lien?`<div class="doc-meta"><a href="${d.lien}" target="_blank" style="color:var(--rouge);font-size:11px">🔗 Voir la source</a></div>`:''}
+        ${d.notes?`<div class="doc-notes">${d.notes}</div>`:''}
+        <button class="delete-btn" style="margin-top:12px" onclick="supprimerDocument('${d.id}')">✕ Supprimer</button>
+      </div>
+    `).join('');
+  };
+
+  // ===== FRISE =====
+  window.ajouterEvenement = async function() {
+    const titre = document.getElementById('tl-titre').value.trim();
+    const date = document.getElementById('tl-date').value;
+    if (!titre || !date) { alert('Veuillez indiquer une date et un titre.'); return; }
+    await ajouter('evenements', {
+      date, titre,
+      categorie: document.getElementById('tl-categorie').value,
+      lieu: document.getElementById('tl-lieu').value,
+      desc: document.getElementById('tl-desc').value
+    });
+    ['tl-date','tl-titre','tl-lieu','tl-desc'].forEach(id => document.getElementById(id).value = '');
+  };
+
+  window.supprimerEvenement = async function(id) {
+    if (confirm('Supprimer cet événement ?')) await supprimer('evenements', id);
+  };
+
+  window.renderTimeline = function() {
+    const container = document.getElementById('timeline-container');
+    if (!cache.evenements.length) {
+      container.innerHTML = `<div class="empty-state"><div class="icon">📅</div><p>Aucun événement enregistré</p></div>`;
+      return;
+    }
+    container.innerHTML = cache.evenements.map((e, i) => `
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:${catColors[e.categorie]||'var(--or)'}"></div>
+        <div class="timeline-card">
+          <button class="timeline-delete" onclick="supprimerEvenement('${e.id}')">✕</button>
+          <div class="timeline-date">${categorieLabels[e.categorie]||e.categorie}${e.lieu?' · '+e.lieu:''}</div>
+          <div class="timeline-date" style="color:var(--brun)">${new Date(e.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div>
+          <div class="timeline-title">${e.titre}</div>
+          ${e.desc?`<div class="timeline-desc">${e.desc}</div>`:''}
+        </div>
+      </div>
+    `).join('');
+  };
+
+  // ===== BIBLIOGRAPHIE =====
+  window.ajouterBiblio = async function() {
+    const titre = document.getElementById('bib-titre').value.trim();
+    if (!titre) { alert('Veuillez indiquer un titre.'); return; }
+    await ajouter('bibliographie', {
+      auteur: document.getElementById('bib-auteur').value,
+      titre,
+      type: document.getElementById('bib-type').value,
+      annee: document.getElementById('bib-annee').value,
+      editeur: document.getElementById('bib-editeur').value,
+      lu: document.getElementById('bib-lu').value,
+      notes: document.getElementById('bib-notes').value
+    });
+    ['bib-auteur','bib-titre','bib-annee','bib-editeur','bib-notes'].forEach(id => document.getElementById(id).value = '');
+  };
+
+  window.supprimerBiblio = async function(id) {
+    if (confirm('Supprimer cette référence ?')) await supprimer('bibliographie', id);
+  };
+
+  window.renderBiblio = function() {
+    const tbody = document.getElementById('bib-tbody');
+    if (!cache.bibliographie.length) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;font-style:italic;color:var(--gris)">Aucune référence enregistrée</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = cache.bibliographie.map(b => {
+      const [bc,bl] = badgeLu[b.lu] || ['badge-gris','—'];
+      return `<tr>
+        <td><em>${b.auteur||'—'}</em></td>
+        <td><strong>${b.titre}</strong></td>
+        <td>${bibTypeLabels[b.type]||b.type}</td>
+        <td>${b.annee||'—'}</td>
+        <td>${b.editeur||'—'}</td>
+        <td><span class="badge ${bc}">${bl}</span></td>
+        <td style="max-width:180px;font-size:12px;font-style:italic">${b.notes||'—'}</td>
+        <td><button class="delete-btn" onclick="supprimerBiblio('${b.id}')">✕</button></td>
+      </tr>`;
+    }).join('');
+  };
+
+  // ===== JOURNAL =====
+  window.ajouterJournal = async function() {
+    const texte = document.getElementById('journal-texte').value.trim();
+    if (!texte) { alert('Veuillez écrire une note.'); return; }
+    await ajouter('journal', {
+      date: document.getElementById('journal-date').value || today(),
+      theme: document.getElementById('journal-theme').value,
+      texte
+    });
+    ['journal-theme','journal-texte'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('journal-date').value = today();
+  };
+
+  window.supprimerJournal = async function(id) {
+    if (confirm('Supprimer cette note ?')) await supprimer('journal', id);
+  };
+
+  window.renderJournal = function() {
+    const container = document.getElementById('journal-container');
+    if (!cache.journal.length) {
+      container.innerHTML = `<div class="empty-state"><div class="icon">✍️</div><p>Aucune note de recherche</p></div>`;
+      return;
+    }
+    container.innerHTML = cache.journal.map(j => `
+      <div class="journal-entry">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="journal-date">${new Date(j.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}${j.theme?' · '+j.theme:''}</div>
+          <button class="delete-btn" onclick="supprimerJournal('${j.id}')">✕</button>
+        </div>
+        <div class="journal-text">${j.texte.replace(/\n/g,'<br>')}</div>
+      </div>
+    `).join('');
+  };
+
+  // ===== DASHBOARD =====
+  window.renderDashboard = function() {
+    const repondu = cache.federations.filter(f => ['repondu','positif','negatif'].includes(f.reponse)).length;
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-number">${cache.federations.length}</div><div class="stat-label">Fédérations suivies</div></div>
+      <div class="stat-card"><div class="stat-number">${repondu}</div><div class="stat-label">Réponses reçues</div></div>
+      <div class="stat-card"><div class="stat-number">${cache.documents.length}</div><div class="stat-label">Documents archivés</div></div>
+      <div class="stat-card"><div class="stat-number">${cache.evenements.length}</div><div class="stat-label">Événements datés</div></div>
+    `;
+    const dernFeds = [...cache.federations].slice(-4).reverse();
+    document.getElementById('dashboard-feds').innerHTML = dernFeds.length ? dernFeds.map(f => {
+      const [bc,bl] = badgeReponse[f.reponse] || ['badge-gris','—'];
+      return `<div style="background:white;padding:12px 16px;margin-bottom:8px;border-left:3px solid var(--or);display:flex;justify-content:space-between;align-items:center">
+        <strong>${f.pays}</strong><span class="badge ${bc}">${bl}</span>
+      </div>`;
+    }).join('') : `<div class="empty-state"><p>Aucune fédération</p></div>`;
+
+    const dernNotes = cache.journal.slice(0, 3);
+    document.getElementById('dashboard-journal').innerHTML = dernNotes.length ? dernNotes.map(j => `
+      <div style="background:white;padding:12px 16px;margin-bottom:8px;border-left:3px solid var(--brun-clair)">
+        <div style="font-size:11px;color:var(--gris);font-family:'Special Elite',cursive;margin-bottom:4px">${new Date(j.date).toLocaleDateString('fr-FR')}${j.theme?' · '+j.theme:''}</div>
+        <div style="font-size:13px;font-style:italic">${j.texte.substring(0,120)}${j.texte.length>120?'...':''}</div>
+      </div>
+    `).join('') : `<div class="empty-state"><p>Aucune note</p></div>`;
+  };
+</script>
+
+</body>
+</html>
